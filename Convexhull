@@ -1,0 +1,169 @@
+//https://codeforces.com/contest/319/problem/C
+#include <bits/stdc++.h>
+#define ll long long
+ll md = 1000000007;
+#define fast                          \
+    ios_base::sync_with_stdio(false); \
+    cin.tie(0);                       \
+    cout.tie(0);
+#define pb push_back
+#define g(v, i, j) get<i>(v[j])
+#define vi vector<int>
+#define vll vector<ll>
+#define srt(v) sort(v.begin(), v.end())
+#define rsrt(v) sort(v.begin(), v.end(), greater<int>())
+#define fi(i, a, b) for (int i = a; i < b; i++)
+#define fll(i, a, b) for (ll i = a; i < b; i++)
+using namespace std;
+//using namespace std::chrono;
+template <typename T>
+T pw(T a, T b)
+{
+    T c = 1, m = a;
+    while (b)
+    {
+        if (b & 1)
+            c = (c * m);
+        m = (m * m), b /= 2;
+    }
+    return c;
+}
+template <typename T>
+T ceel(T a, T b)
+{
+    if (a % b == 0)
+        return a / b;
+    else
+        return a / b + 1;
+}
+template <typename T>
+T my_log(T n, T b)
+{
+    T i = 1, ans = 0;
+    while (1)
+    {
+        if (i > n)
+        {
+            ans--;
+            break;
+        }
+        if (i == n)
+            break;
+        i *= b, ans++;
+    }
+    return ans;
+}
+template <typename T>
+T gcd(T a, T b)
+{
+    if (b == 0)
+        return a;
+    return gcd(b, a % b);
+}
+template <typename T>
+T mysqt(T a)
+{
+    T ans = 1;
+    while (ans * ans <= a)
+        ans++;
+    ans--;
+    return ans;
+}
+ll pwmd(ll a, ll b)
+{
+    ll c = 1, m = a;
+    while (b)
+    {
+        if (b & 1)
+            c = (c * m) % md;
+        m = (m * m) % md;
+        b /= 2;
+    }
+    return c;
+}
+ll modinv(ll n)
+{
+    return pwmd(n, md - 2);
+}
+ll inverse(ll i)
+{
+    if (i == 1)
+        return 1;
+    return (md - ((md / i) * inverse(md % i)) % md + md) % md;
+}
+bool sortbysec(const pair<ll, ll> &a,
+               const pair<ll, ll> &b)
+{
+    return (a.second < b.second);
+}
+/* auto start = high_resolution_clock::now();
+    auto stop = high_resolution_clock::now();
+    auto duration = duration_cast<microseconds>(stop - start);
+    cerr << "Time taken: "
+         << duration.count()<< "ms" <<"\n";*/
+vector<char> capl = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
+vector<char> sml = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
+template <typename T>
+string conv(T a)
+{
+    string b;
+    T e = 2;
+    T c = my_log(a, e);
+    c++, b = '1';
+    for (T i = 0; i < c - 1; i++)
+    {
+        T k = a >> (c - 2 - i);
+        if (k & 1)
+            b += '1';
+        else
+            b += '0';
+    }
+    if (a == 0)
+        return "0";
+    return b;
+}
+// This is for maximum query, for minimum query you can make slope and intercept -ve
+struct Line {
+	mutable ll k, m, p;
+	bool operator<(const Line& o) const { return k < o.k; }
+	bool operator<(ll x) const { return p < x; }
+};
+struct LineContainer : multiset<Line, less<>> {
+	// (for doubles, use inf = 1/.0, div(a,b) = a/b)
+	static const ll inf = LLONG_MAX;
+	ll div(ll a, ll b) { // floored division
+		return a / b - ((a ^ b) < 0 && a % b); }
+	bool isect(iterator x, iterator y) {
+		if (y == end()) return x->p = inf, 0;
+		if (x->k == y->k) x->p = x->m > y->m ? inf : -inf;
+		else x->p = div(y->m - x->m, x->k - y->k);
+		return x->p >= y->p;
+	}
+	void add(ll k, ll m) { // k = slope, m = intercept
+		auto z = insert({k, m, 0}), y = z++, x = y;
+		while (isect(y, z)) z = erase(z);
+		if (x != begin() && isect(--x, y)) isect(x, y = erase(y));
+		while ((y = x) != begin() && (--x)->p >= y->p)
+			isect(x, erase(y));
+	}
+	ll query(ll x) {
+		assert(!empty());
+		auto l = *lower_bound(x);
+		return l.k * x + l.m;
+	}
+};
+int main()
+{
+    fast;
+    ll n;
+    cin >> n;
+    ll a[n], b[n];
+    fll(i, 0, n) cin >> a[i];
+    fll(i, 0, n) cin >> b[i];
+    ll dp[n];
+    dp[0] = 0;
+    LineContainer l;
+    l.add(-b[0], dp[0]);
+    fll(i, 1, n) dp[i] = -l.query(a[i]), l.add(-b[i], -dp[i]);
+    cout << dp[n - 1];
+}

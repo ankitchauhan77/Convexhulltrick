@@ -14,6 +14,7 @@ ll md = 1000000007;
 #define rsrt(v) sort(v.begin(), v.end(), greater<int>())
 #define fi(i, a, b) for (int i = a; i < b; i++)
 #define fll(i, a, b) for (ll i = a; i < b; i++)
+#define int long long
 using namespace std;
 //using namespace std::chrono;
 template <typename T>
@@ -152,7 +153,7 @@ struct LineContainer : multiset<Line, less<>> {
 		return l.k * x + l.m;
 	}
 };
-int main()
+signed main()
 {
     fast;
     ll n;
